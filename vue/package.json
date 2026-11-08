@@ -1,5 +1,5 @@
 {
-  "name": "usp",
+  "name": "vuesp.wemos-d1-mini",
   "version": "0.1.0",
   "description": "USP — ESP8266 project with a local Vuesp web interface",
   "license": "MIT",
@@ -45,7 +45,7 @@
     "tailwindcss": "4.1.13",
     "vue": "3.5.45",
     "vue-router": "4.5.1",
-    "vuesp-components": "2.3.2",
+    "vuesp-components": "2.4.0",
     "vuesp-struct": "1.3.1"
   },
   "devDependencies": {

@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Release tag (e.g. 3.4.0) — leave empty to use pushed tag'
+        description: 'Release tag (e.g. V4.1) — leave empty to use pushed tag'
         required: false
         default: ''
 
@@ -34,7 +34,7 @@ jobs:
           cache-dependency-path: "./vue/package-lock.json"
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Type check
         run: npm run typecheck
@@ -53,14 +53,14 @@ jobs:
           retention-days: 1
 
   backend:
-    name: Backend - PlatformIO Check
+    name: Backend - PlatformIO (${{ matrix.env }})
     runs-on: ubuntu-latest
     needs: frontend
 
     strategy:
       fail-fast: false
       matrix:
-        platform:
+        env:
           - esp8266
 
     steps:
@@ -96,26 +96,26 @@ jobs:
       - name: List data folder
         run: ls -la data/www/ && ls -la data/www/assets/ || true
 
-      - name: Build firmware for ${{ matrix.platform }}
-        run: pio run -e ${{ matrix.platform }}
+      - name: Build firmware
+        run: pio run -e ${{ matrix.env }}
 
-      - name: Build filesystem for ${{ matrix.platform }}
-        run: pio run -e ${{ matrix.platform }} -t buildfs
+      - name: Build filesystem
+        run: pio run -e ${{ matrix.env }} -t buildfs
 
       - name: Rename firmware files
         run: |
-          cp build/${{ matrix.platform }}/firmware.bin ${{ matrix.platform }}_firmware.bin
-          if [ -f build/${{ matrix.platform }}/littlefs.bin ]; then
-            cp build/${{ matrix.platform }}/littlefs.bin ${{ matrix.platform }}_littlefs.bin
+          cp build/${{ matrix.env }}/firmware.bin ${{ matrix.env }}_firmware.bin
+          if [ -f build/${{ matrix.env }}/littlefs.bin ]; then
+            cp build/${{ matrix.env }}/littlefs.bin ${{ matrix.env }}_littlefs.bin
           fi
 
       - name: Upload firmware artifact
         uses: actions/upload-artifact@v4
         with:
-          name: firmware-${{ matrix.platform }}
+          name: firmware-${{ matrix.env }}
           path: |
-            ${{ matrix.platform }}_firmware.bin
-            ${{ matrix.platform }}_littlefs.bin
+            ${{ matrix.env }}_firmware.bin
+            ${{ matrix.env }}_littlefs.bin
           if-no-files-found: warn
           retention-days: 30
 
@@ -159,40 +159,41 @@ jobs:
             TAG="${GITHUB_REF#refs/tags/}"
           fi
           echo "tag=$TAG" >> $GITHUB_OUTPUT
-          echo "version=$TAG" >> $GITHUB_OUTPUT   # больше не убираем префикс v
 
-      - name: Download esp8266 firmware
+      - name: Download firmware artifacts
         uses: actions/download-artifact@v4
         with:
-          name: firmware-esp8266
+          pattern: firmware-*
           path: release
+          merge-multiple: true
 
       - name: Create firmware.json
         run: |
-          VERSION="${{ steps.vars.outputs.version }}"
+          VERSION="${{ steps.vars.outputs.tag }}"
           TAG="${{ steps.vars.outputs.tag }}"
           REPO="https://github.com/${GITHUB_REPOSITORY}"
-          
+
           echo "{" > release.json
           echo "  \"version\": \"$VERSION\"," >> release.json
           echo "  \"tag\": \"$TAG\"," >> release.json
           echo "  \"files\": {" >> release.json
-          
+
           first=true
           for f in release/*.bin; do
+            [ -f "$f" ] || continue
             name=$(basename "$f" .bin)
             if [ "$first" = true ]; then
               first=false
             else
               echo "," >> release.json
             fi
-            printf "    \"$name\": \"$REPO/releases/download/$TAG/$(basename $f)\"" >> release.json
+            printf "    \"%s\": \"%s/releases/download/%s/%s\"" "$name" "$REPO" "$TAG" "$(basename "$f")" >> release.json
           done
-          
+
           echo "" >> release.json
           echo "  }" >> release.json
           echo "}" >> release.json
-          
+
           cat release.json
 
       - name: Upload to Release
@@ -215,21 +216,20 @@ jobs:
       - name: Check if README exists
         run: |
           if [ -f README.md ]; then
-            echo "✅ README.md found"
+            echo "README.md found"
           else
-            echo "❌ README.md not found"
+            echo "README.md not found"
             exit 1
           fi
 
       - name: Check if package.json is valid JSON
-        run: |
-          cat vue/package.json | jq . || exit 1
+        run: cat vue/package.json | jq . >/dev/null
 
       - name: Check if platformio.ini exists
         run: |
           if [ -f platformio.ini ]; then
-            echo "✅ platformio.ini found"
+            echo "platformio.ini found"
           else
-            echo "❌ platformio.ini not found"
+            echo "platformio.ini not found"
             exit 1
           fi
