@@ -1,0 +1,15 @@
+{
+  "$schema": "https://vuesp.ru/schema/vuesp-project.json",
+  "name": "USP",
+  "summary": "USP — проект на ESP8266 с локальным веб-интерфейсом",
+  "description": "## USP\n\nПроект на ESP8266 (ESP12E) с локальным веб-интерфейсом Vuesp: дашборд, GPIO, ScriptRunner, настройки Wi-Fi и обновление по воздуху.",
+  "platforms": ["ESP8266"],
+  "tags": ["esp8266", "wifi", "vuesp"],
+  "createdWith": "vuesp-create@1.0.1",
+  "createdAt": "2026-11-08T18:37:55.226Z",
+  "template": {
+    "source": "local",
+    "ref": "local",
+    "commit": "8ebddcfc6f90135d6b2c1532c29eac0fd293f4ae"
+  }
+}
