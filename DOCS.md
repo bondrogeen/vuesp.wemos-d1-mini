@@ -1,10 +1,10 @@
-# USP — документация
+# vuesp.wemos-d1-mini — документация
 
 Проект на ESP8266 (ESP12E) с локальным веб-интерфейсом Vuesp.
 
 ## Обзор
 
-USP собирается под ESP8266 и использует стандартный шаблон Vuesp: Wi-Fi,
+`vuesp.wemos-d1-mini` собирается под ESP8266 и использует стандартный шаблон Vuesp: Wi-Fi,
 LittleFS, WebSocket, ScriptRunner и веб-интерфейс на Vue 3.
 
 ## Порты

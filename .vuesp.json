@@ -1,10 +1,19 @@
 {
   "$schema": "https://vuesp.ru/schema/vuesp-project.json",
-  "name": "USP",
-  "summary": "USP — проект на ESP8266 с локальным веб-интерфейсом",
-  "description": "## USP\n\nПроект на ESP8266 (ESP12E) с локальным веб-интерфейсом Vuesp: дашборд, GPIO, ScriptRunner, настройки Wi-Fi и обновление по воздуху.",
-  "platforms": ["ESP8266"],
-  "tags": ["esp8266", "wifi", "vuesp"],
+  "name": "vuesp.wemos-d1-mini",
+  "summary": "ESP8266 (ESP12E) board with GPIO, PWM, ADC and a local Vuesp web interface.",
+  "description": "## Vuesp Wemos D1 mini\n\nESP8266 (ESP12E) project with the standard Vuesp web interface. The default pin map includes GPIO 4 and 5 as inputs with pull-ups, GPIO 12 as a digital output, GPIO 13 and 14 as PWM outputs and A0 as an analog input.\n\nThe dashboard contains buttons for the digital ports, PWM dimmers, an ADC value and ScriptRunner automation. DS18B20 temperature sensors are supported through OneWire. Wi-Fi setup, LittleFS and OTA updates are included.",
+  "platforms": [
+    "ESP8266"
+  ],
+  "tags": [
+    "esp8266",
+    "wemos-d1-mini",
+    "esp12e",
+    "gpio",
+    "pwm",
+    "adc"
+  ],
   "createdWith": "vuesp-create@1.0.1",
   "createdAt": "2026-11-08T18:37:55.226Z",
   "template": {
