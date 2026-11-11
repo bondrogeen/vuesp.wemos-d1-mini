@@ -75,5 +75,13 @@
       "minimatch": "^11.0.1"
     }
   },
-  "private": true
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bondrogeen/vuesp.wemos-d1-mini"
+  },
+  "homepage": "https://vuesp.ru",
+  "bugs": {
+    "url": "https://github.com/bondrogeen/vuesp.wemos-d1-mini/issues"
+  }
 }
